@@ -18,7 +18,7 @@ function createDatabaseAndTables()
 
         // Crear la base de datos pase_de_lista
         $pdo->exec('CREATE DATABASE IF NOT EXISTS n4ri2lcee1wd01m1');
-        $pdo->exec('USE pase_de_lista');
+        $pdo->exec('n4ri2lcee1wd01m1');
 
       
 
