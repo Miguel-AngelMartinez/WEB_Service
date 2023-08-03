@@ -38,13 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['CONTENT_TYPE'] === 'appli
 
     // Procesar los datos y almacenarlos en la base de datos
     try {
-        $stmt = $pdo->prepare('INSERT INTO notificaciones (titulo, descripcion, fecha, Alumnos_ID) 
-                               VALUES (:titulo, :descripcion, :fecha, :Alumnos_ID)');
+        $stmt = $pdo->prepare('INSERT INTO notificaciones (token, padres_id) 
+                               VALUES (:token, :padres_id)');
 
-        $stmt->bindParam(':titulo', $data['titulo']);
-        $stmt->bindParam(':descripcion', $data['descripcion']);
-        $stmt->bindParam(':fecha', $data['fecha']);
-        $stmt->bindParam(':Alumnos_ID', $data['Alumnos_ID']);
+        $stmt->bindParam(':token', $data['token']);
+        $stmt->bindParam(':padres_id', $data['padres_id']);
+        
 
         $stmt->execute();
 
@@ -62,12 +61,10 @@ if($_SERVER["REQUEST_METHOD"] == "PUT")
     {
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
-        $sql = $pdo->prepare("UPDATE notificaciones SET titulo = :titulo, descripcion = :descripcion, fecha = :fecha, Alumnos_ID = :Alumnos_ID WHERE id = :id");
+        $sql = $pdo->prepare("UPDATE notificaciones SET token = :token, padres_id=:padres_id  WHERE id = :id");
         $sql->bindValue(':id', $_GET['id']);
-        $sql->bindParam(':titulo', $data['titulo']);
-        $sql->bindParam(':descripcion', $data['descripcion']);
-        $sql->bindParam(':fecha', $data['fecha']);
-        $sql->bindParam(':Alumnos_ID', $data['Alumnos_ID']);
+        $sql->bindParam(':token', $data['token']);
+        $sql->bindParam(':padres_id', $data['padres_id']);
         $sql->execute();
         echo "Actualizado exitosamente";
         exit();
