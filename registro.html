@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Padres</title>
+</head>
+<body>
+    <h1>Formulario de Padres</h1>
+    <form id="padreForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br>
+        <label for="a_paterno">Apellido Paterno:</label>
+        <input type="text" id="a_paterno" required><br>
+        <label for="a_materno">Apellido Materno:</label>
+        <input type="text" id="a_materno" required><br>
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" required><br>
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" required><br>
+        <button type="button" onclick="enviarDatos()">Enviar</button>
+    </form>
+
+    <script>
+        function enviarDatos() {
+            const nombre = document.getElementById("nombre").value;
+            const a_paterno = document.getElementById("a_paterno").value;
+            const a_materno = document.getElementById("a_materno").value;
+            const direccion = document.getElementById("direccion").value;
+            const telefono = document.getElementById("telefono").value;
+          
+
+            const data = {
+                nombre: nombre,
+                a_paterno: a_paterno,
+                a_materno: a_materno,
+                direccion: direccion,
+                telefono: telefono,
+    
+            };
+
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/padres.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(responseText => alert(responseText))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
