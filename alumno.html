@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro, Mostrar, Editar y Eliminar Alumnos</title>
+</head>
+<body>
+    <h1>Registro de Alumnos</h1>
+    <form id="alumno-form">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="a_paterno" placeholder="Apellido Paterno" required>
+        <input type="text" id="a_materno" placeholder="Apellido Materno" required>
+        <input type="text" id="matricula" placeholder="Matrícula" required>
+        <input type="text" id="asistencia" placeholder="Asistencia" required>
+        <input type="text" id="Clase_ID" placeholder="ID Clase" required>
+        <input type="text" id="Padres_ID" placeholder="ID Padres" required>
+
+        <button type="submit">Registrar Alumno</button>
+    </form>
+
+    <h1>Lista de Alumnos</h1>
+    <ul id="alumnos-lista"></ul>
+
+    <script>
+        const alumnoForm = document.getElementById('alumno-form');
+const alumnosLista = document.getElementById('alumnos-lista');
+
+// Función para realizar la solicitud al Web Service PHP
+function obtenerAlumnos() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php', true);
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            mostrarAlumnos(response);
+        } else {
+            console.error('Error al obtener los datos');
+        }
+    };
+
+    xhr.send();
+}
+
+// Función para mostrar la lista de alumnos en el elemento UL
+function mostrarAlumnos(alumnos) {
+    alumnosLista.innerHTML = '';
+
+    alumnos.forEach(function (alumno) {
+        const li = document.createElement('li');
+        li.textContent = `${alumno.nombre} ${alumno.a_paterno} ${alumno.a_materno}`;
+
+        // Botón para editar el alumno
+        const editarBtn = document.createElement('button');
+        editarBtn.textContent = 'Editar';
+        editarBtn.onclick = function () {
+            editarAlumno(alumno.id, alumno.nombre, alumno.a_paterno, alumno.a_materno, alumno.matricula, alumno.asistencia, alumno.Clase_ID, alumno.Padres_ID);
+        };
+
+        // Botón para eliminar el alumno
+        const eliminarBtn = document.createElement('button');
+        eliminarBtn.textContent = 'Eliminar';
+        eliminarBtn.onclick = function () {
+            eliminarAlumno(alumno.id);
+        };
+
+        li.appendChild(editarBtn);
+        li.appendChild(eliminarBtn);
+        alumnosLista.appendChild(li);
+    });
+}
+
+// Función para registrar un nuevo alumno
+function registrarAlumno(event) {
+    event.preventDefault();
+
+    const formData = new FormData(alumnoForm);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            obtenerAlumnos(); // Actualizar la lista de alumnos después del registro
+            alumnoForm.reset(); // Limpiar el formulario después del registro
+        } else {
+            console.error('Error al registrar el alumno');
+        }
+    };
+
+    xhr.send(new URLSearchParams(formData).toString());
+}
+
+// Función para editar un alumno
+function editarAlumno(id, nombre, a_paterno, a_materno, matricula, asistencia, Clase_ID, Padres_ID) {
+    // Implementar la lógica para editar el alumno aquí
+    console.log(`Editar alumno: ${nombre} ${a_paterno} ${a_materno} (ID: ${id})`);
+}
+
+// Función para eliminar un alumno por ID
+function eliminarAlumno(id) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${id}`, true);
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            obtenerAlumnos(); // Actualizar la lista de alumnos después de la eliminación
+        } else {
+            console.error('Error al eliminar el alumno');
+        }
+    };
+
+    xhr.send();
+}
+
+// Asignar el evento submit al formulario de registro
+alumnoForm.addEventListener('submit', registrarAlumno);
+
+// Al cargar la página, obtenemos los datos de los alumnos
+window.onload = obtenerAlumnos;
+
+    </script>
+</body>
+</html>
