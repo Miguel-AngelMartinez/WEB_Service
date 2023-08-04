@@ -73,7 +73,7 @@
                 mochilasList.innerHTML = '';
                 mochilas.forEach(mochila => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `Estudiante: ${mochila.id_estudiantes}, Libro 1: ${mochila.libro1}, Libro 2: ${mochila.libro2}, Libro 3: ${mochila.libro3}, Préstamo: ${mochila.fecha_prestamo}, Entrega: ${mochila.fecha_entrega}`;
+                    listItem.textContent = `ID Estudiante: ${mochila.id_estudiantes}, Libro 1: ${mochila.libro1}, Libro 2: ${mochila.libro2}, Libro 3: ${mochila.libro3}, Préstamo: ${mochila.fecha_prestamo}, Entrega: ${mochila.fecha_entrega}`;
 
                     // Botón Eliminar
                     const eliminarButton = document.createElement('button');
