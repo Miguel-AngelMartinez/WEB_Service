@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consumir Servicios</title>
+</head>
+<body>
+    <h1>Consumir Servicios</h1>
+    
+    <!-- GET Request -->
+    <button onclick="getNotificaciones()">Obtener Notificaciones</button>
+    <div id="getResponse"></div>
+    
+    <!-- POST Request -->
+    <button onclick="crearNotificacion()">Crear Notificación</button>
+    <div id="postResponse"></div>
+    
+    <!-- PUT Request -->
+    <button onclick="actualizarNotificacion()">Actualizar Notificación</button>
+    <div id="putResponse"></div>
+    
+    <!-- DELETE Request -->
+    <button onclick="eliminarNotificacion()">Eliminar Notificación</button>
+    <div id="deleteResponse"></div>
+
+    <script>
+        function getNotificaciones() {
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php')
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('getResponse');
+                    responseDiv.innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    const responseDiv = document.getElementById('getResponse');
+                    responseDiv.innerHTML = `Error: ${error.message}`;
+                });
+        }
+
+        function crearNotificacion() {
+            const data = {
+                token: 'ejemplo_token',
+                padres_id: 1
+            };
+
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(message => {
+                const responseDiv = document.getElementById('postResponse');
+                responseDiv.innerHTML = message;
+            })
+            .catch(error => {
+                const responseDiv = document.getElementById('postResponse');
+                responseDiv.innerHTML = `Error: ${error.message}`;
+            });
+        }
+
+        function actualizarNotificacion() {
+            const id = 1; // Reemplazar con el ID de la notificación a actualizar
+            const data = {
+                token: 'nuevo_token',
+                padres_id: 2
+            };
+
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php?id=${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(message => {
+                const responseDiv = document.getElementById('putResponse');
+                responseDiv.innerHTML = message;
+            })
+            .catch(error => {
+                const responseDiv = document.getElementById('putResponse');
+                responseDiv.innerHTML = `Error: ${error.message}`;
+            });
+        }
+
+        function eliminarNotificacion() {
+            const id = 1; // Reemplazar con el ID de la notificación a eliminar
+
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php?id=${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.text())
+            .then(message => {
+                const responseDiv = document.getElementById('deleteResponse');
+                responseDiv.innerHTML = message;
+            })
+            .catch(error => {
+                const responseDiv = document.getElementById('deleteResponse');
+                responseDiv.innerHTML = `Error: ${error.message}`;
+            });
+        }
+    </script>
+</body>
+</html>
