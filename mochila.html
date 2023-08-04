@@ -9,7 +9,7 @@
     <h2>Agregar Mochila:</h2>
     <form id="mochilaForm">
         <label for="id_estudiantes">ID Estudiante:</label>
-        <input type="text" id="id_estudiantes" required><br>
+        <input type="number" id="id_estudiantes" required><br>
         <label for="libro_1">Libro 1:</label>
         <input type="text" id="libro_1"><br>
         <label for="libro_2">Libro 2:</label>
@@ -28,7 +28,7 @@
 
     <script>
         async function agregarMochila() {
-            const id_estudiantes = document.getElementById("id_estudiantes").value;
+            const id_estudiantes = parseInt(document.getElementById("id_estudiantes").value);
             const libro_1 = document.getElementById("libro_1").value;
             const libro_2 = document.getElementById("libro_2").value;
             const libro_3 = document.getElementById("libro_3").value;
