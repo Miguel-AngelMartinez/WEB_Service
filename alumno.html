@@ -1,125 +1,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registro, Mostrar, Editar y Eliminar Alumnos</title>
+    <title>Gestión de Alumnos</title>
 </head>
 <body>
-    <h1>Registro de Alumnos</h1>
-    <form id="alumno-form">
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <input type="text" id="a_paterno" placeholder="Apellido Paterno" required>
-        <input type="text" id="a_materno" placeholder="Apellido Materno" required>
-        <input type="text" id="matricula" placeholder="Matrícula" required>
-        <input type="text" id="asistencia" placeholder="Asistencia" required>
-        <input type="text" id="Clase_ID" placeholder="ID Clase" required>
-        <input type="text" id="Padres_ID" placeholder="ID Padres" required>
-
-        <button type="submit">Registrar Alumno</button>
+    <h1>Gestión de Alumnos</h1>
+    <h2>Agregar nuevo alumno:</h2>
+    <form id="alumnoForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br>
+        <label for="a_paterno">Apellido Paterno:</label>
+        <input type="text" id="a_paterno" required><br>
+        <label for="a_materno">Apellido Materno:</label>
+        <input type="text" id="a_materno" required><br>
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" required><br>
+        <label for="asistencia">Asistencia:</label>
+        <input type="text" id="asistencia" required><br>
+        <label for="Clase_ID">ID Clase:</label>
+        <input type="text" id="Clase_ID" required><br>
+        <label for="Padres_ID">ID Padres:</label>
+        <input type="text" id="Padres_ID" required><br>
+        <button type="button" onclick="agregarAlumno()">Agregar</button>
     </form>
 
-    <h1>Lista de Alumnos</h1>
-    <ul id="alumnos-lista"></ul>
-
-    <script src="jquery.min.js"></script>
+    <h2>Lista de Alumnos:</h2>
+    <ul id="alumnosList"></ul>
 
     <script>
-        const alumnoForm = document.getElementById('alumno-form');
-const alumnosLista = document.getElementById('alumnos-lista');
+        async function agregarAlumno() {
+            const nombre = document.getElementById("nombre").value;
+            const a_paterno = document.getElementById("a_paterno").value;
+            const a_materno = document.getElementById("a_materno").value;
+            const matricula = document.getElementById("matricula").value;
+            const asistencia = document.getElementById("asistencia").value;
+            const Clase_ID = document.getElementById("Clase_ID").value;
+            const Padres_ID = document.getElementById("Padres_ID").value;
 
-// Función para realizar la solicitud al Web Service PHP
-function obtenerAlumnos() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php', true);
+            const data = {
+                nombre: nombre,
+                a_paterno: a_paterno,
+                a_materno: a_materno,
+                matricula: matricula,
+                asistencia: asistencia,
+                Clase_ID: Clase_ID,
+                Padres_ID: Padres_ID
+            };
 
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            mostrarAlumnos(response);
-        } else {
-            console.error('Error al obtener los datos');
+            try {
+                const response = await fetch('https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("Alumno agregado exitosamente.");
+                    cargarAlumnos();
+                } else {
+                    alert("Error al agregar el alumno.");
+                }
+            } catch (error) {
+                alert("Error en la conexión: " + error.message);
+            }
         }
-    };
 
-    xhr.send();
-}
+        async function cargarAlumnos() {
+            try {
+                const response = await fetch('https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php');
+                const alumnos = await response.json();
+                const alumnosList = document.getElementById("alumnosList");
 
-// Función para mostrar la lista de alumnos en el elemento UL
-function mostrarAlumnos(alumnos) {
-    alumnosLista.innerHTML = '';
+                alumnosList.innerHTML = '';
+                alumnos.forEach(alumno => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${alumno.nombre} ${alumno.a_paterno} ${alumno.a_materno} - Matrícula: ${alumno.matricula}`;
 
-    alumnos.forEach(function (alumno) {
-        const li = document.createElement('li');
-        li.textContent = `${alumno.nombre} ${alumno.a_paterno} ${alumno.a_materno}`;
+                    // Botón Editar
+                    const editarButton = document.createElement('button');
+                    editarButton.textContent = "Editar";
+                    editarButton.addEventListener('click', () => editarAlumno(alumno));
+                    listItem.appendChild(editarButton);
 
-        // Botón para editar el alumno
-        const editarBtn = document.createElement('button');
-        editarBtn.textContent = 'Editar';
-        editarBtn.onclick = function () {
-            editarAlumno(alumno.id, alumno.nombre, alumno.a_paterno, alumno.a_materno, alumno.matricula, alumno.asistencia, alumno.Clase_ID, alumno.Padres_ID);
-        };
+                    // Botón Eliminar
+                    const eliminarButton = document.createElement('button');
+                    eliminarButton.textContent = "Eliminar";
+                    eliminarButton.addEventListener('click', () => eliminarAlumno(alumno.id));
+                    listItem.appendChild(eliminarButton);
 
-        // Botón para eliminar el alumno
-        const eliminarBtn = document.createElement('button');
-        eliminarBtn.textContent = 'Eliminar';
-        eliminarBtn.onclick = function () {
-            eliminarAlumno(alumno.id);
-        };
-
-        li.appendChild(editarBtn);
-        li.appendChild(eliminarBtn);
-        alumnosLista.appendChild(li);
-    });
-}
-
-// Función para registrar un nuevo alumno
-function registrarAlumno(event) {
-    event.preventDefault();
-
-    const formData = new FormData(alumnoForm);
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            obtenerAlumnos(); // Actualizar la lista de alumnos después del registro
-            alumnoForm.reset(); // Limpiar el formulario después del registro
-        } else {
-            console.error('Error al registrar el alumno');
+                    alumnosList.appendChild(listItem);
+                });
+            } catch (error) {
+                alert("Error al cargar la lista de alumnos: " + error.message);
+            }
         }
-    };
 
-    xhr.send(new URLSearchParams(formData).toString());
-}
+        async function editarAlumno(alumno) {
+            const nuevoNombre = prompt("Ingrese el nuevo nombre del alumno:", alumno.nombre);
+            if (nuevoNombre) {
+                const data = {
+                    nombre: nuevoNombre
+                };
 
-// Función para editar un alumno
-function editarAlumno(id, nombre, a_paterno, a_materno, matricula, asistencia, Clase_ID, Padres_ID) {
-    // Implementar la lógica para editar el alumno aquí
-    console.log(`Editar alumno: ${nombre} ${a_paterno} ${a_materno} (ID: ${id})`);
-}
+                try {
+                    const response = await fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${alumno.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
 
-// Función para eliminar un alumno por ID
-function eliminarAlumno(id) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${id}`, true);
-
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            obtenerAlumnos(); // Actualizar la lista de alumnos después de la eliminación
-        } else {
-            console.error('Error al eliminar el alumno');
+                    if (response.ok) {
+                        alert("Alumno editado exitosamente.");
+                        cargarAlumnos();
+                    } else {
+                        alert("Error al editar el alumno.");
+                    }
+                } catch (error) {
+                    alert("Error en la conexión: " + error.message);
+                }
+            }
         }
-    };
 
-    xhr.send();
-}
+        async function eliminarAlumno(id) {
+            const confirmacion = confirm("¿Está seguro de eliminar este alumno?");
+            if (confirmacion) {
+                try {
+                    const response = await fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${id}`, {
+                        method: 'DELETE'
+                    });
 
-// Asignar el evento submit al formulario de registro
-alumnoForm.addEventListener('submit', registrarAlumno);
+                    if (response.ok) {
+                        alert("Alumno eliminado exitosamente.");
+                        cargarAlumnos();
+                    } else {
+                        alert("Error al eliminar el alumno.");
+                    }
+                } catch (error) {
+                    alert("Error en la conexión: " + error.message);
+                }
+            }
+        }
 
-// Al cargar la página, obtenemos los datos de los alumnos
-window.onload = obtenerAlumnos;
-
+        // Cargar la lista de alumnos al cargar la página
+        cargarAlumnos();
     </script>
 </body>
 </html>
