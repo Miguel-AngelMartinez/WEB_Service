@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD de Mochila</title>
+</head>
+<body>
+    <h1>CRUD de Mochila</h1>
+
+    <h2>Agregar Mochila:</h2>
+    <form id="mochilaForm">
+        <label for="id_estudiantes">ID Estudiante:</label>
+        <input type="text" id="id_estudiantes" required><br>
+        <label for="libro_1">Libro 1:</label>
+        <input type="text" id="libro_1"><br>
+        <label for="libro_2">Libro 2:</label>
+        <input type="text" id="libro_2"><br>
+        <label for="libro_3">Libro 3:</label>
+        <input type="text" id="libro_3"><br>
+        <label for="fecha_prestamo">Fecha de Préstamo:</label>
+        <input type="text" id="fecha_prestamo" required><br>
+        <label for="fecha_entrega">Fecha de Entrega:</label>
+        <input type="text" id="fecha_entrega" required><br>
+        <button type="button" onclick="agregarMochila()">Agregar</button>
+    </form>
+
+    <h2>Lista de Mochilas:</h2>
+    <ul id="mochilasList"></ul>
+
+    <script>
+        async function agregarMochila() {
+            const id_estudiantes = document.getElementById("id_estudiantes").value;
+            const libro_1 = document.getElementById("libro_1").value;
+            const libro_2 = document.getElementById("libro_2").value;
+            const libro_3 = document.getElementById("libro_3").value;
+            const fecha_prestamo = document.getElementById("fecha_prestamo").value;
+            const fecha_entrega = document.getElementById("fecha_entrega").value;
+
+            const data = {
+                id_estudiantes: id_estudiantes,
+                libro1: libro_1,
+                libro2: libro_2,
+                libro3: libro_3,
+                fecha_prestamo: fecha_prestamo,
+                fecha_entrega: fecha_entrega
+            };
+
+            try {
+                const response = await fetch('https://pruebasupt-1864fba60c56.herokuapp.com/mochila.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("Mochila agregada exitosamente.");
+                    cargarMochilas();
+                } else {
+                    alert("Error al agregar la mochila.");
+                }
+            } catch (error) {
+                alert("Error en la conexión: " + error.message);
+            }
+        }
+
+        async function cargarMochilas() {
+            try {
+                const response = await fetch('https://pruebasupt-1864fba60c56.herokuapp.com/mochila.php');
+                const mochilas = await response.json();
+                const mochilasList = document.getElementById("mochilasList");
+
+                mochilasList.innerHTML = '';
+                mochilas.forEach(mochila => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Estudiante: ${mochila.id_estudiantes}, Libro 1: ${mochila.libro1}, Libro 2: ${mochila.libro2}, Libro 3: ${mochila.libro3}, Préstamo: ${mochila.fecha_prestamo}, Entrega: ${mochila.fecha_entrega}`;
+
+                    // Botón Eliminar
+                    const eliminarButton = document.createElement('button');
+                    eliminarButton.textContent = "Eliminar";
+                    eliminarButton.addEventListener('click', () => eliminarMochila(mochila.id));
+                    listItem.appendChild(eliminarButton);
+
+                    mochilasList.appendChild(listItem);
+                });
+            } catch (error) {
+                alert("Error al cargar la lista de mochilas: " + error.message);
+            }
+        }
+
+        async function eliminarMochila(id) {
+            const confirmacion = confirm("¿Está seguro de eliminar esta mochila?");
+            if (confirmacion) {
+                try {
+                    const response = await fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/mochila.php?id=${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        alert("Mochila eliminada exitosamente.");
+                        cargarMochilas();
+                    } else {
+                        alert("Error al eliminar la mochila.");
+                    }
+                } catch (error) {
+                    alert("Error en la conexión: " + error.message);
+                }
+            }
+        }
+
+        // Cargar la lista de mochilas al cargar la página
+        cargarMochilas();
+    </script>
+</body>
+</html>
