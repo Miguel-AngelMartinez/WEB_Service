@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Consumir Servicios</title>
+
+</head>
+
+<body>
+
+    <h1>Consumir Servicios</h1>
+
+ 
+
+    <!-- GET Request -->
+
+    <button onclick="getEstudiante()">Obtener Estudiante</button>
+
+    <div id="response"></div>
+    <script>
+        function getEstudiante() {
+
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php')
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    const responseDiv = document.getElementById('response');
+
+                    responseDiv.innerHTML = `
+
+                        <p>ID: ${data.id}</p>
+
+                        <p>Nombre: ${data.nombre}</p>
+
+                        <p>Apellido Paterno: ${data.a_paterno}</p>
+
+                        <p>Apellido Materno: ${data.a_materno}</p>
+
+                        <p>Matrícula: ${data.matricula}</p>
+
+                    `;
+
+                })
+
+                .catch(error => {
+
+                    const responseDiv = document.getElementById('response');
+
+                    responseDiv.innerHTML = `Error: ${error.message}`;
+
+                });
+
+        }
+    </script>
+</body>
+</html>
