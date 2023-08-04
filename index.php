@@ -1,6 +1,6 @@
 <?php
 if(isset($_POST['descargar'])) {
-    $archivo = 'descargasser/giroscopio.rar'; // Ruta al archivo RAR
+    $archivo = 'descargasser/com.companyname.paselistav2.apk'; // Ruta al archivo RAR
 
     if (file_exists($archivo)) {
         // Configurar las cabeceras para la descarga
