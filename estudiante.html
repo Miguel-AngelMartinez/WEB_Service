@@ -1,59 +1,57 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
-    <title>Consumir Servicios</title>
-
+    <title>Consumir Servicio de Alumnos</title>
 </head>
-
 <body>
+    <h1>Consumir Servicio de Alumnos</h1>
 
-    <h1>Consumir Servicios</h1>
+    <!-- Mostrar todos los alumnos -->
+    <button onclick="obtenerAlumnos()">Obtener Alumnos</button>
+    <div id="alumnos-lista"></div>
 
- 
+    <!-- Mostrar un alumno específico -->
+    <label for="alumno-id">ID del Alumno:</label>
+    <input type="number" id="alumno-id">
+    <button onclick="obtenerAlumnoPorId()">Buscar Alumno por ID</button>
+    <div id="alumno-info"></div>
 
-    <!-- GET Request -->
-
-    <button onclick="getEstudiante()">Obtener Estudiante</button>
-
-    <div id="response"></div>
     <script>
-        function getEstudiante() {
-
-            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php')
-
+        // Función para obtener todos los alumnos
+        function obtenerAlumnos() {
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php')
                 .then(response => response.json())
-
                 .then(data => {
-
-                    const responseDiv = document.getElementById('response');
-
-                    responseDiv.innerHTML = `
-
-                        <p>ID: ${data.id}</p>
-
-                        <p>Nombre: ${data.nombre}</p>
-
-                        <p>Apellido Paterno: ${data.a_paterno}</p>
-
-                        <p>Apellido Materno: ${data.a_materno}</p>
-
-                        <p>Matrícula: ${data.matricula}</p>
-
-                    `;
-
+                    const alumnosLista = document.getElementById('alumnos-lista');
+                    alumnosLista.innerHTML = '';
+                    data.forEach(alumno => {
+                        const li = document.createElement('li');
+                        li.textContent = `ID: ${alumno.id}, Nombre: ${alumno.nombre}, Apellido Paterno: ${alumno.a_paterno}, Apellido Materno: ${alumno.a_materno}`;
+                        alumnosLista.appendChild(li);
+                    });
                 })
-
                 .catch(error => {
-
-                    const responseDiv = document.getElementById('response');
-
-                    responseDiv.innerHTML = `Error: ${error.message}`;
-
+                    console.error('Error al obtener los alumnos:', error);
                 });
+        }
 
+        // Función para obtener un alumno por ID
+        function obtenerAlumnoPorId() {
+            const alumnoId = document.getElementById('alumno-id').value;
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${alumnoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const alumnoInfo = document.getElementById('alumno-info');
+                    if (data.length > 0) {
+                        const alumno = data[0];
+                        alumnoInfo.innerHTML = `ID: ${alumno.id}, Nombre: ${alumno.nombre}, Apellido Paterno: ${alumno.a_paterno}, Apellido Materno: ${alumno.a_materno}`;
+                    } else {
+                        alumnoInfo.innerHTML = 'Alumno no encontrado';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener el alumno:', error);
+                });
         }
     </script>
 </body>
