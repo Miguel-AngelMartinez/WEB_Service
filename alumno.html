@@ -140,4 +140,13 @@
                         alert("Error al eliminar el alumno.");
                     }
                 } catch (error) {
-                    alert
+                    alert("Error en la conexión: " + error.message);
+                }
+            }
+        }
+
+        // Cargar la lista de alumnos al cargar la página
+        cargarAlumnos();
+    </script>
+</body>
+</html>
