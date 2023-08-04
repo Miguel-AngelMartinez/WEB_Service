@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['CONTENT_TYPE'] === 'appli
 
     // Procesar los datos y almacenarlos en la base de datos
     try {
-        $stmt = $pdo->prepare('INSERT INTO alumnos (nombre, a_paterno, a_materno, matricula, asistencia, Clase_ID, Padres_ID) 
-                               VALUES (:nombre, :a_paterno, :a_materno, :matricula, :asistencia, :Clase_ID, :Padres_ID)');
+        $stmt = $pdo->prepare('INSERT INTO alumnos (nombre, a_paterno, a_materno, matricula, asistencia, Clase_ID, padre) 
+                               VALUES (:nombre, :a_paterno, :a_materno, :matricula, :asistencia, :Clase_ID, :padre)');
 
         $stmt->bindParam(':nombre', $data['nombre']);
         $stmt->bindParam(':a_paterno', $data['a_paterno']);
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['CONTENT_TYPE'] === 'appli
         $stmt->bindParam(':matricula', $data['matricula']);
         $stmt->bindParam(':asistencia', $data['asistencia']);
         $stmt->bindParam(':Clase_ID', $data['Clase_ID']);
-        $stmt->bindParam(':Padres_ID', $data['Padres_ID']);
+        $stmt->bindParam(':padre', $data['padre']);
 
         $stmt->execute();
 
