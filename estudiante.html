@@ -1,57 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Consumir Servicio de Alumnos</title>
+    <title>CRUD de Alumnos</title>
 </head>
 <body>
-    <h1>Consumir Servicio de Alumnos</h1>
-
-    <!-- Mostrar todos los alumnos -->
-    <button onclick="obtenerAlumnos()">Obtener Alumnos</button>
-    <div id="alumnos-lista"></div>
-
-    <!-- Mostrar un alumno específico -->
+    <h1>CRUD de Alumnos</h1>
+    
+    <h2>Crear/Actualizar Alumno</h2>
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre">
+    <label for="a_paterno">Apellido Paterno:</label>
+    <input type="text" id="a_paterno">
+    <label for="a_materno">Apellido Materno:</label>
+    <input type="text" id="a_materno">
+    <label for="matricula">Matrícula:</label>
+    <input type="text" id="matricula">
+    <button onclick="guardarAlumno()">Guardar/Actualizar Alumno</button>
+    
+    <h2>Buscar Alumno por ID</h2>
     <label for="alumno-id">ID del Alumno:</label>
-    <input type="number" id="alumno-id">
-    <button onclick="obtenerAlumnoPorId()">Buscar Alumno por ID</button>
+    <input type="number" id="alumno-id-buscar">
+    <button onclick="buscarAlumnoPorId()">Buscar Alumno</button>
     <div id="alumno-info"></div>
-
+    
+    <h2>Eliminar Alumno por ID</h2>
+    <label for="alumno-id">ID del Alumno:</label>
+    <input type="number" id="alumno-id-eliminar">
+    <button onclick="eliminarAlumno()">Eliminar Alumno</button>
+    
     <script>
-        // Función para obtener todos los alumnos
-        function obtenerAlumnos() {
-            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php')
-                .then(response => response.json())
-                .then(data => {
-                    const alumnosLista = document.getElementById('alumnos-lista');
-                    alumnosLista.innerHTML = '';
-                    data.forEach(alumno => {
-                        const li = document.createElement('li');
-                        li.textContent = `ID: ${alumno.id}, Nombre: ${alumno.nombre}, Apellido Paterno: ${alumno.a_paterno}, Apellido Materno: ${alumno.a_materno}`;
-                        alumnosLista.appendChild(li);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al obtener los alumnos:', error);
-                });
+        function guardarAlumno() {
+            const nombre = document.getElementById('nombre').value;
+            const a_paterno = document.getElementById('a_paterno').value;
+            const a_materno = document.getElementById('a_materno').value;
+            const matricula = document.getElementById('matricula').value;
+            
+            // Aquí puedes realizar la lógica para enviar los datos al servidor y guardar/actualizar el alumno.
+            // Puedes usar la función fetch() similar a los ejemplos anteriores.
         }
-
-        // Función para obtener un alumno por ID
-        function obtenerAlumnoPorId() {
-            const alumnoId = document.getElementById('alumno-id').value;
-            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php?id=${alumnoId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const alumnoInfo = document.getElementById('alumno-info');
-                    if (data.length > 0) {
-                        const alumno = data[0];
-                        alumnoInfo.innerHTML = `ID: ${alumno.id}, Nombre: ${alumno.nombre}, Apellido Paterno: ${alumno.a_paterno}, Apellido Materno: ${alumno.a_materno}`;
-                    } else {
-                        alumnoInfo.innerHTML = 'Alumno no encontrado';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al obtener el alumno:', error);
-                });
+        
+        function buscarAlumnoPorId() {
+            const alumnoId = document.getElementById('alumno-id-buscar').value;
+            
+            // Aquí puedes realizar la lógica para buscar al alumno por su ID y mostrar su información.
+            // Puedes usar la función fetch() similar a los ejemplos anteriores.
+        }
+        
+        function eliminarAlumno() {
+            const alumnoId = document.getElementById('alumno-id-eliminar').value;
+            
+            // Aquí puedes realizar la lógica para eliminar al alumno por su ID.
+            // Puedes usar la función fetch() similar a los ejemplos anteriores.
         }
     </script>
 </body>
