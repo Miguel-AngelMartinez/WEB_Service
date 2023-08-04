@@ -76,7 +76,13 @@
                 alumnosList.innerHTML = '';
                 alumnos.forEach(alumno => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `${alumno.nombre} ${alumno.a_paterno} ${alumno.a_materno} - Matrícula: ${alumno.matricula}`;
+                    listItem.textContent = `
+                        Nombre: ${alumno.nombre} ${alumno.a_paterno} ${alumno.a_materno}
+                        Matrícula: ${alumno.matricula}
+                        Asistencia: ${alumno.asistencia}
+                        ID Clase: ${alumno.Clase_ID}
+                        ID Padres: ${alumno.Padres_ID}
+                    `;
 
                     // Botón Editar
                     const editarButton = document.createElement('button');
@@ -89,6 +95,12 @@
                     eliminarButton.textContent = "Eliminar";
                     eliminarButton.addEventListener('click', () => eliminarAlumno(alumno.id));
                     listItem.appendChild(eliminarButton);
+
+                    // Botón Ver Notificaciones
+                    const verNotificacionesButton = document.createElement('button');
+                    verNotificacionesButton.textContent = "Ver Notificaciones";
+                    verNotificacionesButton.addEventListener('click', () => verNotificaciones(alumno.id));
+                    listItem.appendChild(verNotificacionesButton);
 
                     alumnosList.appendChild(listItem);
                 });
@@ -142,6 +154,22 @@
                 } catch (error) {
                     alert("Error en la conexión: " + error.message);
                 }
+            }
+        }
+
+        async function verNotificaciones(id) {
+            try {
+                const response = await fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php?id=${id}`);
+                const notificaciones = await response.json();
+                let notificacionesTexto = "Notificaciones del Alumno:\n";
+
+                notificaciones.forEach(notificacion => {
+                    notificacionesTexto += `${notificacion.token} - ID Padres: ${notificacion.padres_id}\n`;
+                });
+
+                alert(notificacionesTexto);
+            } catch (error) {
+                alert("Error al cargar las notificaciones: " + error.message);
             }
         }
 
