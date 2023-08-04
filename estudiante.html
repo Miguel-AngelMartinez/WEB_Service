@@ -35,22 +35,61 @@
             const a_materno = document.getElementById('a_materno').value;
             const matricula = document.getElementById('matricula').value;
             
-            // Aquí puedes realizar la lógica para enviar los datos al servidor y guardar/actualizar el alumno.
-            // Puedes usar la función fetch() similar a los ejemplos anteriores.
+            const alumnoData = {
+                nombre: nombre,
+                a_paterno: a_paterno,
+                a_materno: a_materno,
+                matricula: matricula
+            };
+            
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(alumnoData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Alumno guardado/actualizado:', data);
+            })
+            .catch(error => {
+                console.error('Error al guardar/actualizar el alumno:', error);
+            });
         }
         
         function buscarAlumnoPorId() {
             const alumnoId = document.getElementById('alumno-id-buscar').value;
             
-            // Aquí puedes realizar la lógica para buscar al alumno por su ID y mostrar su información.
-            // Puedes usar la función fetch() similar a los ejemplos anteriores.
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php?id=${alumnoId}`)
+            .then(response => response.json())
+            .then(data => {
+                const alumnoInfo = document.getElementById('alumno-info');
+                if (data.length > 0) {
+                    const alumno = data[0];
+                    alumnoInfo.innerHTML = `ID: ${alumno.id}, Nombre: ${alumno.nombre}, Apellido Paterno: ${alumno.a_paterno}, Apellido Materno: ${alumno.a_materno}, Matrícula: ${alumno.matricula}`;
+                } else {
+                    alumnoInfo.innerHTML = 'Alumno no encontrado';
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener el alumno:', error);
+            });
         }
         
         function eliminarAlumno() {
             const alumnoId = document.getElementById('alumno-id-eliminar').value;
             
-            // Aquí puedes realizar la lógica para eliminar al alumno por su ID.
-            // Puedes usar la función fetch() similar a los ejemplos anteriores.
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php?id=${alumnoId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Alumno eliminado:', data);
+            })
+            .catch(error => {
+                console.error('Error al eliminar el alumno:', error);
+            });
         }
     </script>
 </body>
