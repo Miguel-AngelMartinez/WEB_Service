@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enviar Notificación</title>
+    <title>Enviar y Ver Notificaciones</title>
 </head>
 <body>
-    <h1>Enviar Notificación</h1>
+    <h1>Enviar y Ver Notificaciones</h1>
+    <h2>Enviar Notificación</h2>
     <form id="notificacion-form">
         <label for="token">Token:</label>
         <input type="text" id="token" required><br>
@@ -15,8 +16,12 @@
         <button type="submit">Enviar Notificación</button>
     </form>
 
+    <h2>Notificaciones Creadas</h2>
+    <ul id="notificaciones-list"></ul>
+
     <script>
         const notificacionForm = document.getElementById('notificacion-form');
+        const notificacionesList = document.getElementById('notificaciones-list');
 
         notificacionForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -31,7 +36,7 @@
                 padre_id: parseInt(padre_id)
             };
 
-            // Realizar la solicitud POST al servicio web
+            // Realizar la solicitud POST al servicio web para enviar la notificación
             fetch('https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php', {
                 method: 'POST',
                 headers: {
@@ -43,12 +48,34 @@
             .then(message => {
                 alert(message); // Mostrar mensaje de éxito al usuario
                 notificacionForm.reset(); // Limpiar el formulario después de enviar la notificación
+                cargarNotificaciones(); // Cargar las notificaciones actualizadas después de enviar una nueva
             })
             .catch(error => {
                 console.error('Error al enviar la notificación:', error);
                 alert('Error al enviar la notificación. Por favor, inténtalo de nuevo.');
             });
         });
+
+        function cargarNotificaciones() {
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/notificaciones.php')
+                .then(response => response.json())
+                .then(notificaciones => {
+                    notificacionesList.innerHTML = ''; // Limpiar la lista antes de cargar las notificaciones
+
+                    notificaciones.forEach(notificacion => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `Token: ${notificacion.token}, ID del Padre: ${notificacion.padre_id}`;
+                        notificacionesList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar las notificaciones:', error);
+                    alert('Error al cargar las notificaciones. Por favor, inténtalo de nuevo.');
+                });
+        }
+
+        // Cargar las notificaciones al cargar la página
+        cargarNotificaciones();
     </script>
 </body>
 </html>
