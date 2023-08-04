@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consumo de Servicios</title>
+</head>
+<body>
+    <h1>Registro de Tutor</h1>
+    <form id="tutor-form">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="a_paterno" placeholder="Apellido Paterno" required>
+        <input type="text" id="a_materno" placeholder="Apellido Materno" required>
+        <input type="text" id="cedula" placeholder="Cédula" required>
+        <input type="number" id="edad" placeholder="Edad" required>
+        <input type="text" id="direccion" placeholder="Dirección" required>
+        <input type="text" id="telefono" placeholder="Teléfono" required>
+
+        <button type="submit">Registrar Tutor</button>
+    </form>
+
+    <h1>Lista de Tutores</h1>
+    <ul id="tutores-lista"></ul>
+
+    <script src="jquery.min.js"></script>
+    <script>
+        const tutorForm = document.getElementById('tutor-form');
+const tutoresLista = document.getElementById('tutores-lista');
+
+// URL del servicio
+const apiUrl = 'https://pruebasupt-1864fba60c56.herokuapp.com/tutor.php';
+
+// Función para obtener los tutores desde el servidor
+async function obtenerTutores() {
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        mostrarTutores(data);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+// Función para mostrar la lista de tutores en el elemento UL
+function mostrarTutores(tutores) {
+    tutoresLista.innerHTML = '';
+
+    tutores.forEach(function (tutor) {
+        const li = document.createElement('li');
+        li.textContent = `${tutor.nombre} ${tutor.a_paterno} ${tutor.a_materno}`;
+
+        // Botón para eliminar el tutor
+        const eliminarBtn = document.createElement('button');
+        eliminarBtn.textContent = 'Eliminar';
+        eliminarBtn.onclick = function () {
+            eliminarTutor(tutor.id);
+        };
+
+        li.appendChild(eliminarBtn);
+        tutoresLista.appendChild(li);
+    });
+}
+
+// Función para registrar un nuevo tutor
+async function registrarTutor(event) {
+    event.preventDefault();
+
+    const formData = new FormData(tutorForm);
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al registrar el tutor');
+        }
+
+        obtenerTutores();
+        tutorForm.reset();
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+// Función para eliminar un tutor por ID
+async function eliminarTutor(id) {
+    try {
+        const response = await fetch(`${apiUrl}?id=${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al eliminar el tutor');
+        }
+
+        obtenerTutores();
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+// Asignar el evento submit al formulario de registro
+tutorForm.addEventListener('submit', registrarTutor);
+
+// Al cargar la página, obtenemos los datos de los tutores
+window.onload = obtenerTutores;
+
+    </script>
+</body>
+</html>
