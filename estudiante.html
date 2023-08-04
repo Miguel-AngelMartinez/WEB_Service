@@ -19,7 +19,7 @@
     <script>
         // Función para obtener todos los alumnos
         function obtenerAlumnos() {
-            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php')
+            fetch('https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php')
                 .then(response => response.json())
                 .then(data => {
                     const alumnosLista = document.getElementById('alumnos-lista');
@@ -38,7 +38,7 @@
         // Función para obtener un alumno por ID
         function obtenerAlumnoPorId() {
             const alumnoId = document.getElementById('alumno-id').value;
-            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/alumnos.php?id=${alumnoId}`)
+            fetch(`https://pruebasupt-1864fba60c56.herokuapp.com/estudiante.php?id=${alumnoId}`)
                 .then(response => response.json())
                 .then(data => {
                     const alumnoInfo = document.getElementById('alumno-info');
