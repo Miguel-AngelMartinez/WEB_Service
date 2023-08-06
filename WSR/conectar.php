@@ -1,10 +1,10 @@
 <?php
 class conectar extends PDO
 {
-	private $servidor = "localhost";
-	private $nombreBd = "alumnos";
-	private $usuarioBd = "root";
-	private $contra = "";
+	private $servidor = "jhdjjtqo9w5bzq2t.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+	private $nombreBd = "n4ri2lcee1wd01m1";
+	private $usuarioBd = "n26pgrpxnjyg2980";
+	private $contra = "dtxl5943hu6hd1e9";
 
 		public function __construct()
 		{
